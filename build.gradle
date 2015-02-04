@@ -1,0 +1,57 @@
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+/**
+ * Dependency versions should go here
+ */
+project.ext {
+    gradleVersion = '2.2.1'
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        // Spring Boot support for Gradle
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE"
+        // Enable hot swapping without restarting
+        classpath "org.springframework:springloaded:1.2.1.RELEASE"
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+
+dependencies {
+    /** We do not want to use tomcat which comes together with spring-boot **/
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude group: "commons-logging", module: "commons-logging"
+    }
+
+    /**
+     * Enable the Spring default endpoints for general application information.
+     * For a list of available actuators have a look here:
+     * http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-endpoints
+     **/
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+
+    /** Use a spring-mvc compatible swagger implementation, which auto generates REST API descriptions: */
+    compile("com.mangofactory:swagger-springmvc:0.9.4")
+
+    /** This is swagger-ui packaged in a Webjar compatible dependency. Available at: http://localhost:8080/sdoc.jsp */
+    compile("org.ajar:swagger-spring-mvc-ui:0.4")
+
+    /** We need jasper for parsing JSPs (at least for swagger-spring-mvc-ui) */
+    runtime("org.apache.tomcat.embed:tomcat-embed-jasper")
+
+    /**
+     * Rest Easy - Used as rest client
+     */
+    compile("org.jboss.resteasy:resteasy-client:3.0.10.Final")
+}
